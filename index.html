@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 🤍</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(to bottom right, #fdf2f8, #ede9fe);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .box {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        padding: 50px;
+        border-radius: 25px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        max-width: 520px;
+        position: relative;
+        transition: all 0.5s ease;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #6d28d9;
+    }
+
+    p {
+        font-size: 1rem;
+        color: #555;
+    }
+
+    button {
+        padding: 12px 30px;
+        margin: 15px;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.4s ease;
+    }
+
+    .yes {
+        background: #a78bfa;
+        color: white;
+    }
+
+    .yes:hover {
+        background: #8b5cf6;
+    }
+
+    .no {
+        background: #fda4af;
+        color: white;
+        position: absolute;
+    }
+
+    .no:hover {
+        background: #fb7185;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    #retryMessage {
+        margin-top: 20px;
+        color: #be185d;
+        font-weight: 400;
+    }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="box" id="page1">
+    <h1>Is this Apeksha?</h1>
+    <button class="yes" onclick="goToLove()">Yes</button>
+    <button class="no" onclick="retry()">No</button>
+    <p id="retryMessage"></p>
+</div>
+
+<!-- PAGE 2 -->
+<div class="box hidden" id="page2">
+    <h1>Do you love me?</h1>
+    <button class="yes" onclick="showFinal()">Yes</button>
+    <button class="no" id="runawayBtn">No</button>
+</div>
+
+<!-- FINAL PAGE -->
+<div class="box hidden" id="finalPage">
+    <h1>I knew it.</h1>
+    <p>
+        Hearing it still makes my day. <br><br>
+        You mean more to me than you realize.
+    </p>
+</div>
+
+<script>
+function retry() {
+    document.getElementById("retryMessage").innerText =
+        "You already know the answer. Try again 🤍";
+}
+
+function goToLove() {
+    document.getElementById("page1").classList.add("hidden");
+    document.getElementById("page2").classList.remove("hidden");
+
+    const noBtn = document.getElementById("runawayBtn");
+
+    noBtn.addEventListener("mouseover", function() {
+        const x = Math.random() * (window.innerWidth - 120);
+        const y = Math.random() * (window.innerHeight - 60);
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+    });
+}
+
+function showFinal() {
+    document.getElementById("page2").classList.add("hidden");
+    document.getElementById("finalPage").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
