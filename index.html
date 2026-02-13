@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Apeksha 💖</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom right, #ffe6f0, #fff0f5);
+    overflow: hidden;
+    text-align: center;
+}
+
+.page {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.hidden { display: none; }
+
+button {
+    padding: 12px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 25px;
+    background: #ff4d88;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover { transform: scale(1.05); }
+
+#noBtn { position: absolute; }
+
+.fadeText {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    margin-top: 10px;
+}
+
+.showFade { opacity: 1; }
+
+.heartFloat {
+    position: absolute;
+    font-size: 20px;
+    animation: float 6s linear infinite;
+    cursor: pointer;
+}
+
+@keyframes float {
+    0% { transform: translateY(100vh); opacity: 1; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+}
+
+.memory-game {
+    display: grid;
+    grid-template-columns: repeat(4, 70px);
+    gap: 10px;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+.memory-card {
+    width: 70px;
+    height: 70px;
+    background: #ffb6c1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div class="page" id="startPage">
+    <h1>Is this Apeksha? 💖</h1>
+    <button onclick="goToLoveQuestion()">Yes</button>
+    <button onclick="retry()">No</button>
+    <p id="retryText"></p>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page hidden" id="loveQuestionPage">
+    <h1>Do you love me? 💘</h1>
+    <button onclick="goToLovePage()">Yes</button>
+    <button id="noBtn" onclick="moveNo()">No</button>
+    <p id="teaseMessage" class="fadeText">😑 stawppp, you do!, alright??</p>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page hidden" id="lovePage">
+    <h1>I Love You 💗</h1>
+    <p>
+        You are my favorite person, my safe place, my happiness.
+        Every day with you feels special.
+        I’m lucky to have you.
+        And I always choose you. 💖
+    </p>
+    <button onclick="startCatchGame()">Catch The Heart 💓</button>
+    <button onclick="showMemoryGame()">Play Memory Match 💌</button>
+</div>
+
+<!-- MEMORY PAGE -->
+<div class="page hidden" id="memoryPage">
+    <h1>Memory Match 💌</h1>
+    <p>Match the hearts 💖</p>
+    <div class="memory-game" id="memoryGame"></div>
+    <button onclick="goBack()">Back 💕</button>
+</div>
+
+<script>
+let noAttempts = 0;
+
+/* PAGE NAVIGATION */
+function retry() {
+    document.getElementById("retryText").innerText = "Yes you are! 💕";
+}
+
+function goToLoveQuestion() {
+    startPage.classList.add("hidden");
+    loveQuestionPage.classList.remove("hidden");
+}
+
+function goToLovePage() {
+    loveQuestionPage.classList.add("hidden");
+    lovePage.classList.remove("hidden");
+    startFloatingHearts();
+}
+
+function showMemoryGame() {
+    lovePage.classList.add("hidden");
+    memoryPage.classList.remove("hidden");
+    startMemoryGame();
+}
+
+function goBack() {
+    memoryPage.classList.add("hidden");
+    lovePage.classList.remove("hidden");
+}
+
+/* NO BUTTON MOVEMENT */
+function moveNo() {
+    const btn = document.getElementById("noBtn");
+    const padding = 20;
+
+    const maxX = window.innerWidth - btn.offsetWidth - padding;
+    const maxY = window.innerHeight - btn.offsetHeight - padding;
+
+    btn.style.left = Math.random() * maxX + "px";
+    btn.style.top = Math.random() * maxY + "px";
+
+    noAttempts++;
+    if (noAttempts >= 3) {
+        teaseMessage.classList.add("showFade");
+    }
+}
+
+/* FLOATING HEARTS */
+function startFloatingHearts() {
+    setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heartFloat";
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.onclick = () => heart.remove();
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+    }, 500);
+}
+
+/* REAL CATCH GAME */
+function startCatchGame() {
+    lovePage.innerHTML = `
+        <h1>Catch The Heart 💓</h1>
+        <p>Score: <span id="score">0</span></p>
+        <p>Time Left: <span id="timer">15</span>s</p>
+        <div id="gameArea" style="position:relative;width:100%;height:60vh;"></div>
+        <button onclick="reloadLovePage()">Back 💕</button>
+    `;
+
+    let score = 0;
+    let timeLeft = 15;
+    const gameArea = document.getElementById("gameArea");
+
+    function spawnHeart() {
+        const heart = document.createElement("div");
+        heart.innerHTML = "💖";
+        heart.style.position = "absolute";
+        heart.style.fontSize = "40px";
+        heart.style.cursor = "pointer";
+        heart.style.left = Math.random() * (window.innerWidth - 60) + "px";
+        heart.style.top = Math.random() * (gameArea.offsetHeight - 60) + "px";
+
+        heart.onclick = () => {
+            score++;
+            document.getElementById("score").innerText = score;
+            heart.remove();
+        };
+
+        gameArea.appendChild(heart);
+        setTimeout(() => heart.remove(), 1000);
+    }
+
+    const spawnInterval = setInterval(spawnHeart, 800);
+
+    const timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(spawnInterval);
+            clearInterval(timerInterval);
+            gameArea.innerHTML += `<h2>Final Score: ${score} 💕</h2>`;
+        }
+    }, 1000);
+}
+
+function reloadLovePage() {
+    location.reload();
+}
+
+/* MEMORY GAME */
+function startMemoryGame() {
+    const game = document.getElementById("memoryGame");
+    game.innerHTML = "";
+
+    const emojis = ["💖","💘","💕","💗","💖","💘","💕","💗"];
+    emojis.sort(() => 0.5 - Math.random());
+
+    let first = null;
+    let second = null;
+
+    emojis.forEach(emoji => {
+        const card = document.createElement("div");
+        card.className = "memory-card";
+        card.innerHTML = "❓";
+
+        card.onclick = () => {
+            if (card.innerHTML !== "❓") return;
+
+            card.innerHTML = emoji;
+
+            if (!first) {
+                first = card;
+            } else {
+                second = card;
+
+                if (first.innerHTML === second.innerHTML) {
+                    first = null;
+                    second = null;
+                } else {
+                    setTimeout(() => {
+                        first.innerHTML = "❓";
+                        second.innerHTML = "❓";
+                        first = null;
+                        second = null;
+                    }, 800);
+                }
+            }
+        };
+
+        game.appendChild(card);
+    });
+}
+</script>
+
+</body>
+</html>
